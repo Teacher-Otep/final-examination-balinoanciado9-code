@@ -1,92 +1,309 @@
-body{
-    display:flex;
-    justify-content: center;
-    flex-direction: column;
-    background-color: rgb(255, 255, 255);
+/* ==========================================================================
+   LABEL: MODERN THEME & VARIABLE ASSIGNMENTS (EMERALD GREEN PALETTE)
+   ========================================================================== */
+:root {
+    --primary: #0f5132;        /* Deep Forest Green */
+    --primary-light: #198754;  /* Vibrant Emerald Green */
+    --primary-accent: #e8f5e9; /* Soft Mint tint for active highlights */
+    --text: #212529;           /* Clean dark slate text */
+    --text-muted: #6c757d;     /* Subdued gray text */
+    --bg: #f8f9fa;             /* Crisp off-white background */
+    --card-bg: #ffffff;        /* Pure white card backgrounds */
+    --danger: #dc3545;         /* Ruby Red for deletion */
+    --danger-hover: #b52a37;   /* Deeper red variant */
 }
-.navbar{
+
+body {
+    margin: 0;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   LABEL: STICKY NAVIGATION BAR STYLING
+   ========================================================================== */
+.navbar {
+    background-color: var(--card-bg);
+    padding: 0.8rem 0;
+    box-shadow: 0 4px 20px rgba(15, 81, 50, 0.04);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid rgba(0,0,0,0.03);
+}
+
+.nav-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
     display: flex;
-    justify-content:space-evenly;
-    width:80%;
-    height:5vh;
-    align-items: center;
-    background-color: rgba(102, 176, 241, 1);
-    color: white;
-    border-radius:45px;
-}
-
-#logo{
-    width:40px;
-    height:auto;
-    filter: invert(30%) sepia(100%) saturate(500%) hue-rotate(200deg);
-}
-
-.navbarbuttons{
-    background-color:rgba(240, 255, 255, .3);
-    border:none;
-    width:100px;
-    border-radius:45px;
-    backdrop-filter: 5px;
-    color:aliceblue;
-}
-
-.content,.homecontent{
-    display:block;
+    justify-content: space-between;
     align-items: center;
 }
 
-.contenttitle,.label,.btns,.splash{
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color:rgb(102, 176, 241); 
-
+#logo { 
+    width: 42px; 
+    cursor: pointer; 
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+}
+#logo:hover { 
+    transform: scale(1.12) rotate(3deg); 
 }
 
-.splash{
-    font-style: italic;
+/* ==========================================================================
+   LABEL: CAPSULE MENU SELECTION ITEMS (PILL SHAPE COMPONENT)
+   ========================================================================== */
+.nav-btn {
+    background: transparent;
+    border: 2px solid transparent;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin-left: 0.75rem;
+    cursor: pointer;
+    padding: 10px 24px;
+    border-radius: 50px; /* PILL REQ: Capsule rounded corners */
+    transition: all 0.25s ease;
 }
 
-.label,.field,.btns{
-    margin-top:10px;
+.nav-btn:hover {
+    color: var(--primary);
+    background-color: var(--primary-accent);
 }
 
-.label {
-    display: inline-block;
-    width: 150px; 
-    font-weight: bold;
-}
-
-.field {
-    display: inline-block;
-    width: 250px; 
-    padding: 5px;
-    box-sizing: border-box; 
-}
-
-.btns{
-    width:182px;
-    padding:3px;
-}
-
-#btncontainer{
-    display:flex;
-    gap:20px;
-}
-
-/* For the insertion success message */
-#success-toast {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: #4CAF50;
+.nav-btn:active, .nav-btn:focus {
+    background-color: var(--primary);
     color: white;
+}
+
+/* ==========================================================================
+   LABEL: CONTENT WINDOW SPACES CONTAINER LAYOUT
+   ========================================================================== */
+.main-container {
+    width: 90%;
+    max-width: 700px;
+    margin: 3rem auto;
+}
+
+.card {
+    background: var(--card-bg);
+    padding: 2.5rem;
+    border-radius: 24px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.01);
+}
+
+.homecontent {
+    text-align: center;
+    padding: 4rem 1rem;
+}
+
+.splash {
+    font-size: 2.8rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.8rem;
+}
+
+.homecontent p {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+}
+
+.contenttitle {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-top: 0;
+    margin-bottom: 2rem;
+    color: var(--primary);
+}
+
+/* ==========================================================================
+   LABEL: DATA INPUT ENTRIES FORM CONTROLS
+   ========================================================================== */
+.form-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+input {
+    padding: 14px 18px;
+    border: 2px solid #e2e8f0;
+    border-radius: 14px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--text);
+    background-color: #fdfdfd;
+    transition: all 0.2s ease;
+}
+
+input:focus {
+    border-color: var(--primary-light);
+    background-color: #fff;
+    box-shadow: 0 0 0 4px var(--primary-accent);
+    outline: none;
+}
+
+/* ==========================================================================
+   LABEL: SYSTEM SUBMISSION SUB-BUTTONS (PILL RE-RADIUS)
+   ========================================================================== */
+.btn-row {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.btn-pri {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 50px; /* PILL REQ: Capsule rounded style */
+    font-weight: 600;
+    font-size: 1rem;
+    font-family: inherit;
+    cursor: pointer;
+    flex: 2;
+    box-shadow: 0 4px 15px rgba(25, 135, 84, 0.2);
+    transition: all 0.2s ease;
+}
+
+.btn-pri:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(25, 135, 84, 0.3);
+}
+
+.btn-sec {
+    background: #e2e8f0;
+    color: #475569;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 50px; /* PILL REQ: Capsule rounded style */
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.btn-sec:hover {
+    background: #cbd5e1;
+}
+
+.full-width {
+    width: 100%;
+}
+
+/* ==========================================================================
+   LABEL: ACADEMIC DATA SUMMARY GRID (READ VIEW)
+   ========================================================================== */
+.table-wrapper {
+    overflow-x: auto;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: #f1f5f9;
+    text-align: left;
     padding: 16px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    transition: opacity 0.5s ease-in-out;
-    z-index: 1000;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--primary);
+    border-bottom: 2px solid #e2e8f0;
 }
 
-.toast-hidden {
+td {
+    padding: 16px;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 0.95rem;
+}
+
+/* ==========================================================================
+   LABEL: DELETION INTERFACE COMPONENT PANEL ELEMENT
+   ========================================================================== */
+.delete-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.delete-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    background: #fff5f5;
+    border: 1px solid #ffe3e3;
+    border-radius: 16px;
+    transition: transform 0.2s;
+}
+
+.delete-item span {
+    font-weight: 600;
+    color: #a71d2a;
+}
+
+.btn-del {
+    background: var(--danger);
+    color: white;
+    text-decoration: none;
+    padding: 8px 18px;
+    border-radius: 50px; /* PILL REQ: Capsule rounded style */
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+.btn-del:hover {
+    background: var(--danger-hover);
+}
+
+/* ==========================================================================
+   LABEL: OVERLAY ACTION SNACKBAR TOAST
+   ========================================================================== */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #198754;
+    color: white;
+    padding: 16px 32px;
+    border-radius: 50px;
+    font-weight: 600;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     display: none;
-    opacity: 0;
+    z-index: 1000;
+    animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }

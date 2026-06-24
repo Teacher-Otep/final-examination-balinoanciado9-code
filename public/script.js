@@ -1,38 +1,41 @@
-//fucntion to show selected section
-function showSection(sectionID){
-    //initially, select all sections
-    // use querySelectorAll for all sections with class content and homecontent
-    const sections = document.querySelectorAll('.content');
-    const homesection = document.querySelectorAll('.homecontent');
-
-    //hide the resulting content sections using foreach
-    sections.forEach(section => {
-        section.style.display='none';
-    });
-
-
-    //select the section that would
-    //be displayed when clicked
-    const activeSection = document.getElementById(sectionID);
-    if(activeSection){
-        activeSection.style.display='block';
+/* ==========================================================================
+   LABEL: SECTION SELECTION VIEW MANAGER
+   ========================================================================== */
+function showSection(sectionID) {
+    document.querySelectorAll('.content').forEach(s => s.style.display = 'none');
+    document.getElementById('home').style.display = 'none';
+    
+    const active = document.getElementById(sectionID);
+    if(active) {
+        active.style.display = 'block';
     }
 }
 
-//for the insertion success
-window.onload = function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('status') === 'success') {
-        const toast = document.getElementById('success-toast');
-        toast.classList.remove('toast-hidden');
-        
-        // Hide it automatically after 3 seconds
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            setTimeout(() => toast.classList.add('toast-hidden'), 500);
-        }, 3000);
+/* ==========================================================================
+   LABEL: RESET WORKSPACE VIEW ON BRAND LOGO INTERACTION
+   ========================================================================== */
+function hideContent() {
+    document.querySelectorAll('.content').forEach(s => s.style.display = 'none');
+    document.getElementById('home').style.display = 'block';
+}
 
-        // Clean the URL
-        window.history.replaceState({}, document.title, window.location.pathname);
+/* ==========================================================================
+   LABEL: INPUT RESET METHOD
+   ========================================================================== */
+function clearFields() {
+    document.querySelectorAll('input').forEach(input => input.value = '');
+}
+
+/* ==========================================================================
+   LABEL: APP CONFIRMATION SUCCESS BANNER LOADER
+   ========================================================================== */
+window.onload = function() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('status') === 'success') {
+        const toast = document.getElementById('success-toast');
+        if(toast) {
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 3500);
+        }
     }
 }

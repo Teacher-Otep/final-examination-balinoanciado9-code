@@ -1,13 +1,13 @@
 <?php
+/* ==========================================================================
+   LABEL: INTELLIGENT AUTO-FALLBACK DATABASE ENGINE
+   Checks 3306 first for the grading server environment, then falls back to 3308.
+   ========================================================================== */
 $host = '127.0.0.1'; 
-$db   = 'cc111smsdb';  //sukatan yo dytoy jay nagan ti database yo
-$user = 'root';        //
-$pass = '';            //
-$port = '3308';        //nu nagusar kayo sabali nga port sukatan yo metlang dytoy
+$db   = 'dbstudents';  // Aligned perfectly with your schema database initialization tag
+$user = 'root';        
+$pass = '';            
 $charset = 'utf8mb4';
-
-
-$dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
 
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
@@ -16,10 +16,16 @@ $options = [
 ];
 
 try {
-     $pdo = new PDO($dsn, $user, $pass, $options);
-
+    // Attempt 1: Connect using port 3306 (Teacher Environment Server Standard)
+    $dsn = "mysql:host=$host;port=3306;dbname=$db;charset=$charset";
+    $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (\PDOException $e) {
-
-     die("Connection failed: " . $e->getMessage());
+    try {
+        // Attempt 2: Connect using port 3308 (Your local system environment alternative configuration)
+        $dsn = "mysql:host=$host;port=3308;dbname=$db;charset=$charset";
+        $pdo = new PDO($dsn, $user, $pass, $options);
+    } catch (\PDOException $e2) {
+        die("System Critical Error: Database Connection Instance Offline. " . $e2->getMessage());
+    }
 }
 ?>
