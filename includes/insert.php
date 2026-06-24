@@ -1,5 +1,4 @@
 <?php
-
 require_once __DIR__ . '/db.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -22,11 +21,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             ':contact'    => $contact
         ]);
 
-        header("Location: ../public/index.php?status=success");
+        // LABEL: Smart redirection back to your root dashboard location level
+        if (file_exists(__DIR__ . '/../index.php')) {
+            header("Location: ../index.php?status=success");
+        } else {
+            header("Location: ../public/index.php?status=success");
+        }
         exit();
         
     } catch (PDOException $e) {
-        echo "Database Error: " . $e->getMessage();
+        die("Database Insertion Error: " . $e->getMessage());
     }
 }
 ?>
