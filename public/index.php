@@ -1,100 +1,170 @@
 <?php
-$conn = mysqli_connect("localhost", "root", "", "dbstudents");
-
-if (isset($_POST['save'])) {
-    $n = $_POST['name']; $s = $_POST['surname']; $m = $_POST['middlename'];
-    $a = $_POST['address']; $c = $_POST['contact'];
-    mysqli_query($conn, "INSERT INTO students (name, surname, middlename, address, contact_number) VALUES ('$n', '$s', '$m', '$a', '$c')");
-    header("Location: index.php?status=success");
+/* ==========================================================================
+   LABEL: TEACHER GITHUB COMPATIBLE PATH RESOLVER
+   Automatically shifts paths whether running flat locally or inside /public/ on GitHub.
+   ========================================================================== */
+if (file_exists(__DIR__ . '/../includes/db.php')) {
+    require_once __DIR__ . '/../includes/db.php';
+    $form_action = '../includes/insert.php';
+} elseif (file_exists(__DIR__ . '/includes/db.php')) {
+    require_once __DIR__ . '/includes/db.php';
+    $form_action = 'includes/insert.php';
+} else {
+    die("Configuration Error: includes/db.php could not be found.");
 }
 
+/* ==========================================================================
+   LABEL: CORE ACTION CONTROLLER - UPDATE RECORD
+   ========================================================================== */
 if (isset($_POST['update'])) {
-    $id = $_POST['id']; $n = $_POST['name']; $s = $_POST['surname']; $m = $_POST['middlename'];
-    mysqli_query($conn, "UPDATE students SET name='$n', surname='$s', middlename='$m' WHERE id=$id");
-    header("Location: index.php");
+    $id = $_POST['id']; 
+    $n = $_POST['name']; 
+    $s = $_POST['surname']; 
+    $m = $_POST['middlename'];
+    
+    try {
+        $stmt = $pdo->prepare("UPDATE students SET name = :name, surname = :surname, middlename = :middlename WHERE id = :id");
+        $stmt->execute([
+            ':name'       => $n,
+            ':surname'    => $s,
+            ':middlename' => $m,
+            ':id'         => $id
+        ]);
+        header("Location: index.php");
+        exit();
+    } catch (PDOException $e) {
+        die("Update operational failure: " . $e->getMessage());
+    }
 }
 
+/* ==========================================================================
+   LABEL: CORE ACTION CONTROLLER - DELETE RECORD
+   ========================================================================== */
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
-    mysqli_query($conn, "DELETE FROM students WHERE id=$id");
-    header("Location: index.php");
+    
+    try {
+        $stmt = $pdo->prepare("DELETE FROM students WHERE id = :id");
+        $stmt->execute([':id' => $id]);
+        header("Location: index.php");
+        exit();
+    } catch (PDOException $e) {
+        die("Delete operational failure: " . $e->getMessage());
+    }
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Student System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management Pro</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+
     <nav class="navbar">
-        <img src="logo.svg" id="logo" onclick="hideContent()" alt="Logo">
-        <button class="navbarbuttons" onclick="showSection('create')"> Create </button>
-        <button class="navbarbuttons" onclick="showSection('read')"> Read </button>
-        <button class="navbarbuttons" onclick="showSection('update')"> Update </button>
-        <button class="navbarbuttons" onclick="showSection('delete')"> Delete </button>
+        <div class="nav-container">
+            <img src="logo.svg" id="logo" onclick="hideContent()" alt="System Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+            <div class="nav-links">
+                <button class="nav-btn" onclick="showSection('create')">Create</button>
+                <button class="nav-btn" onclick="showSection('read')">Read</button>
+                <button class="nav-btn" onclick="showSection('update')">Update</button>
+                <button class="nav-btn" onclick="showSection('delete')">Delete</button>
+            </div>
+        </div>
     </nav>
 
-    <section id="home" class="homecontent"> 
-        <h1 class="splash">Student Management System</h1>
-    </section>
-    
-    <section id="create" class="content" style="display:none;">
-        <h1 class="contenttitle">Insert Student</h1>
-        <form method="POST">
-            <label class="label">Surname</label><input type="text" name="surname" class="field" required><br>
-            <label class="label">Name</label><input type="text" name="name" class="field" required><br>
-            <label class="label">Middle Name</label><input type="text" name="middlename" class="field"><br>
-            <label class="label">Address</label><input type="text" name="address" class="field"><br>
-            <label class="label">Contact</label><input type="text" name="contact" class="field"><br>
-            <div id="btncontainer">
-                <button type="button" class="btns" onclick="clearFields()">Clear Fields</button>
-                <button type="submit" name="save" class="btns">Save</button>
+    <main class="main-container">
+        
+        <section id="home" class="homecontent"> 
+            <h1 class="splash">Student Registry</h1>
+            <p>Select an administration option from the top navigation menu to manage database data models.</p>
+        </section>
+        
+        <section id="create" class="content card" style="display:none;">
+            <h2 class="contenttitle">Register New Student</h2>
+            <form action="<?php echo $form_action; ?>" method="POST" class="form-grid">
+                <div class="input-group"><label>Surname</label><input type="text" name="surname" required></div>
+                <div class="input-group"><label>First Name</label><input type="text" name="name" required></div>
+                <div class="input-group"><label>Middle Name</label><input type="text" name="middlename"></div>
+                <div class="input-group"><label>Home Address</label><input type="text" name="address"></div>
+                <div class="input-group"><label>Contact Number</label><input type="text" name="contact"></div>
+                <div class="btn-row">
+                    <button type="button" class="btn-sec" onclick="clearFields()">Clear Fields</button>
+                    <button type="submit" name="save" class="btn-pri">Save Records</button>
+                </div>
+            </form>   
+        </section>
+
+        <section id="read" class="content card" style="display:none;">
+            <h2 class="contenttitle">Database Records</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID Code</th>
+                            <th>Surname</th>
+                            <th>First Name</th>
+                            <th>Middle Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        try {
+                            $stmt = $pdo->query("SELECT * FROM students");
+                            while($row = $stmt->fetch()) {
+                                echo "<tr>
+                                        <td><strong>#{$row['id']}</strong></td>
+                                        <td>{$row['surname']}</td>
+                                        <td>{$row['name']}</td>
+                                        <td>{$row['middlename']}</td>
+                                      </tr>";
+                            }
+                        } catch (PDOException $e) {
+                            echo "<tr><td colspan='4'>Query Error: " . $e->getMessage() . "</td></tr>";
+                        }
+                        ?>
+                    </tbody>
+                </table>
             </div>
-        </form>   
-    </section>
+        </section>
 
-    <section id="read" class="content" style="display:none;">
-        <h1 class="contenttitle">Student List</h1>
-        <table border="1" width="100%" style="border-collapse:collapse;">
-            <tr><th>ID</th><th>Surname</th><th>Name</th><th>Middle</th></tr>
-            <?php
-            $res = mysqli_query($conn, "SELECT * FROM students");
-            while($row = mysqli_fetch_assoc($res)) {
-                echo "<tr>
-                        <td>{$row['id']}</td>
-                        <td>{$row['surname']}</td>
-                        <td>{$row['name']}</td>
-                        <td>{$row['middlename']}</td>
-                      </tr>";
-            }
-            ?>
-        </table>
-    </section>
+        <section id="update" class="content card" style="display:none;">
+            <h2 class="contenttitle">Update Student Information</h2>
+            <form method="POST" class="form-grid">
+                <div class="input-group"><label>ID Target Reference</label><input type="number" name="id" required></div>
+                <div class="input-group"><label>Revised Surname</label><input type="text" name="surname"></div>
+                <div class="input-group"><label>Revised Name</label><input type="text" name="name"></div>
+                <div class="input-group"><label>Revised Middle Name</label><input type="text" name="middlename"></div>
+                <button type="submit" name="update" class="btn-pri full-width">Commit Updates</button>
+            </form>
+        </section>
 
-    <section id="update" class="content" style="display:none;">
-        <h1 class="contenttitle">Update Student</h1>
-        <form method="POST">
-            <label class="label">ID to Change</label><input type="number" name="id" class="field" required><br>
-            <label class="label">New Surname</label><input type="text" name="surname" class="field"><br>
-            <label class="label">New Name</label><input type="text" name="name" class="field"><br>
-            <label class="label">New Middle</label><input type="text" name="middlename" class="field"><br>
-            <button type="submit" name="update" class="btns">Update Record</button>
-        </form>
-    </section>
+        <section id="delete" class="content card" style="display:none;">
+            <h2 class="contenttitle">Danger Zone</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Select a student from the configuration map to permanently delete records from the data layer.</p>
+            <div class="delete-list">
+                <?php
+                try {
+                    $stmt = $pdo->query("SELECT * FROM students");
+                    while($row = $stmt->fetch()) {
+                        echo "<div class='delete-item'>
+                                <span>{$row['name']} {$row['surname']}</span>
+                                <a href='index.php?delete={$row['id']}' class='btn-del' onclick='return confirm(\"Are you sure you want to permanently delete this student?\");'>Remove Record</a>
+                              </div>";
+                    }
+                } catch (PDOException $e) {
+                    echo "<div>Query Error: " . $e->getMessage() . "</div>";
+                }
+                ?>
+            </div>
+        </section>
+    </main>
 
-    <section id="delete" class="content" style="display:none;">
-        <h1 class="contenttitle">Delete</h1>
-        <?php
-        $res = mysqli_query($conn, "SELECT * FROM students");
-        while($row = mysqli_fetch_assoc($res)) {
-            echo "<p>{$row['name']} {$row['surname']} <a href='index.php?delete={$row['id']}' style='color:red'>[DELETE]</a></p>";
-        }
-        ?>
-    </section>
+    <div id="success-toast" class="toast">Record Processed Successfully!</div>
 
-    <div id="success-toast" class="toast-hidden" style="display:none; position:fixed; top:20px; right:20px; background:green; color:white; padding:15px;">Registration Successful!</div>
     <script src="script.js"></script>
 </body>
 </html>
