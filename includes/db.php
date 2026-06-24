@@ -1,12 +1,13 @@
 <?php
+/* ==========================================================================
+   LABEL: INTELLIGENT AUTO-FALLBACK DATABASE ENGINE
+   Checks 3306 first for the grading server environment, then falls back to 3308.
+   ========================================================================== */
 $host = '127.0.0.1'; 
-$db   = 'dbstudents';  // Aligned perfectly to your database schema name
+$db   = 'dbstudents';  // Aligned perfectly with your schema database initialization tag
 $user = 'root';        
 $pass = '';            
-$port = '3308';        // Set to your local 3308 port. Change to '3306' before uploading to GitHub!
 $charset = 'utf8mb4';
-
-$dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
 
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
@@ -15,8 +16,16 @@ $options = [
 ];
 
 try {
-     $pdo = new PDO($dsn, $user, $pass, $options);
+    // Attempt 1: Connect using port 3306 (Teacher Environment Server Standard)
+    $dsn = "mysql:host=$host;port=3306;dbname=$db;charset=$charset";
+    $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (\PDOException $e) {
-     die("Connection failed: " . $e->getMessage());
+    try {
+        // Attempt 2: Connect using port 3308 (Your local system environment alternative configuration)
+        $dsn = "mysql:host=$host;port=3308;dbname=$db;charset=$charset";
+        $pdo = new PDO($dsn, $user, $pass, $options);
+    } catch (\PDOException $e2) {
+        die("System Critical Error: Database Connection Instance Offline. " . $e2->getMessage());
+    }
 }
 ?>
