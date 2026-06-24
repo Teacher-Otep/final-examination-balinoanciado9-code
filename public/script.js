@@ -1,25 +1,41 @@
+/* ==========================================================================
+   LABEL: SECTION SELECTION VIEW MANAGER
+   ========================================================================== */
 function showSection(sectionID) {
     document.querySelectorAll('.content').forEach(s => s.style.display = 'none');
     document.getElementById('home').style.display = 'none';
+    
     const active = document.getElementById(sectionID);
-    if(active) active.style.display = 'block';
+    if(active) {
+        active.style.display = 'block';
+    }
 }
 
+/* ==========================================================================
+   LABEL: RESET WORKSPACE VIEW ON BRAND LOGO INTERACTION
+   ========================================================================== */
 function hideContent() {
     document.querySelectorAll('.content').forEach(s => s.style.display = 'none');
     document.getElementById('home').style.display = 'block';
 }
 
+/* ==========================================================================
+   LABEL: INPUT RESET METHOD
+   ========================================================================== */
 function clearFields() {
-    const inputs = document.querySelectorAll('input[type="text"], input[type="number"]');
-    inputs.forEach(input => input.value = '');
+    document.querySelectorAll('input').forEach(input => input.value = '');
 }
 
+/* ==========================================================================
+   LABEL: APP CONFIRMATION SUCCESS BANNER LOADER
+   ========================================================================== */
 window.onload = function() {
     const params = new URLSearchParams(window.location.search);
     if (params.get('status') === 'success') {
         const toast = document.getElementById('success-toast');
-        toast.style.display = 'block';
-        setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        if(toast) {
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 3500);
+        }
     }
 }
