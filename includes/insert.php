@@ -1,5 +1,10 @@
 <?php
-require_once __DIR__ . '/db.php';
+// Look for db.php in the immediate directory first, then fallback to sibling folder
+if (file_exists(__DIR__ . '/db.php')) {
+    require_once __DIR__ . '/db.php';
+} else {
+    require_once __DIR__ . '/../includes/db.php';
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST['name'] ?? '';
@@ -21,11 +26,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             ':contact'    => $contact
         ]);
 
-        // LABEL: Smart redirection back to your root dashboard location level
+        // Smart redirect back to index.php where it resides
         if (file_exists(__DIR__ . '/../index.php')) {
             header("Location: ../index.php?status=success");
         } else {
-            header("Location: ../public/index.php?status=success");
+            header("Location: index.php?status=success");
         }
         exit();
         
