@@ -1,9 +1,9 @@
 <?php
 $host = '127.0.0.1'; 
-$db   = 'dbstudents';  
+$db   = 'dbstudents';  // Aligned perfectly to your database schema name
 $user = 'root';        
 $pass = '';            
-$port = '3308';       
+$port = '3308';        // Set to your local 3308 port. Change to '3306' before uploading to GitHub!
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
