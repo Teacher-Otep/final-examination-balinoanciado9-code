@@ -1,5 +1,7 @@
 <?php
-// Look for db.php in the immediate directory first, then fallback to sibling folder
+/* ==========================================================================
+   LABEL: MULTI-LEVEL FILE CONFIG ENGINE LINKER
+   ========================================================================== */
 if (file_exists(__DIR__ . '/db.php')) {
     require_once __DIR__ . '/db.php';
 } else {
@@ -14,6 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $contact = $_POST['contact'] ?? '';
 
     try {
+        // Safe prepared statement insertion matching the database parameters
         $sql = "INSERT INTO students (name, surname, middlename, address, contact_number) 
                 VALUES (:name, :surname, :middlename, :address, :contact)";
         
@@ -26,8 +29,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             ':contact'    => $contact
         ]);
 
-        // Smart redirect back to index.php where it resides
-        if (file_exists(__DIR__ . '/../index.php')) {
+        /* ==========================================================================
+           LABEL: MULTI-ENVIRONMENT GITHUB REDIRECTION CONTROLLER
+           ========================================================================== */
+        if (file_exists(__DIR__ . '/../public/index.php')) {
+            header("Location: ../public/index.php?status=success");
+        } elseif (file_exists(__DIR__ . '/../index.php')) {
             header("Location: ../index.php?status=success");
         } else {
             header("Location: index.php?status=success");
@@ -35,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
         
     } catch (PDOException $e) {
-        die("Database Insertion Error: " . $e->getMessage());
+        die("Database Process Write Terminated: " . $e->getMessage());
     }
 }
 ?>
